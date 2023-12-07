@@ -1,6 +1,8 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
 {% load humanize %}
 {% block content %}
+    {% include "navbar.html" %}
     <br><br>
 <div class="card mb-3" style="max-width: 540px;">
   <div class="row g-0">
@@ -13,11 +15,9 @@
         <p class="card-text">{{ product.description }}</p>
         <p class="card-text"><small class="text-body-secondary">    قیمت این محصول:  {{ product.price }}</small></p>
         <a href={% url "home" %} >بازگشت به صفحه قبل</a>
-          <br>
-        <a href={% url "cart" %} >افزودن به سبد خرید</a>
       </div>
     </div>
   </div>
 </div>
-    <br><br>
+
 {% endblock %}

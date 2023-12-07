@@ -13,7 +13,7 @@ def about(request):
     return render(request, 'about.html')
 
 
-def login_user(request, ):
+def login_user(request):
     if request.method == "POST":
         username = request.POST('username')
         password = request.POST('password')
@@ -37,3 +37,6 @@ def logout_user(request):
 def product(request, pk):
     product = Product.objects.get(pk=pk)
     return render(request, "product.html", {"product": product})
+
+def cart(request):
+    return render(request, "cartbox.html")
