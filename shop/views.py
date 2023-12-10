@@ -7,6 +7,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from .forms import SignUpForm
 
+
 def home(request):
     all_products = Product.objects.all()
     return render(request, 'index.html', context={'products': all_products})
@@ -18,8 +19,8 @@ def about(request):
 
 def login_user(request):
     if request.method == "POST":
-        username = request.POST('username')
-        password = request.POST('password')
+        username = request.POST['username']
+        password = request.POST['password']
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
@@ -41,13 +42,11 @@ def product(request, pk):
     product = Product.objects.get(pk=pk)
     return render(request, "product.html", {"product": product})
 
-def cart(request):
-    return render(request, "cartbox.html")
 
 def signup_user(request):
-    form=SignUpForm()
-    if request.method=="POST":
-        form=SignUpForm(request.POST)
+    form = SignUpForm()
+    if request.method == "POST":
+        form = SignUpForm(request.POST)
         if form.is_valid:
             form.save()
             username = form.cleaned_data['username']
@@ -55,8 +54,9 @@ def signup_user(request):
             user = authenticate(request, username=username, password=password1)
             login(request, user)
             messages.success(request,'اکانت شما با موفقیت ساخته شد')
+            return redirect('home')
         else:
             messages.success(request, 'اکانت شما با مشکلی مواجه شد')
             return redirect('signup')
     else:
-        return render(request, 'signup.html', context={'form':form})
+        return render(request, 'signup.html', context={'form': form})
