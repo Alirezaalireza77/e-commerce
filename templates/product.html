@@ -13,8 +13,19 @@
         <h5 class="card-title">{{ product.name }}</h5>
         <p class="card-text">{{ product.description }}</p>
         <p class="card-text"><small class="text-body-secondary">    قیمت این محصول:  {{ product.price }}</small></p>
-
-
+            <div class="row justify-content-center">
+                <div class="col-md-4">تعداد</div>
+                <div class="col-md-2">
+            <select class="form-select form-select-sm" id="qty-card">
+               <option value="1">1</option>
+               <option value="2">2</option>
+               <option value="3">3</option>
+               <option value="3">4</option>
+               <option value="3">5</option>
+            </select>
+                 </div>
+            </div>
+            <br><br>
         <a class="btn btn-secondary" href="{% url 'home' %}">بازگشت به صفحه قبل<a/>
         <button type='button' value='{{ product.id }}' class="btn btn-secondary" id="add-cart">افزودن به سبدخرید</button>
           <br>
@@ -33,9 +44,10 @@ $(document).on('click', '#add-cart', function(e){
         type: 'POST',
         url: '{% url 'cart_add'%}',
         data: {
-            product_id: $('#add-cart').val(),
-            csrfmiddlewaretoken: '{{ csrf_token }}',
-            action: 'post'
+     product_id: $('#add-cart').val(),
+     product_qty: $('#qty-card option:selected')
+     csrfmiddlewaretoken: '{{ csrf_token }}',
+     action: 'post'
         },
         success: function(json){
             //console.log(json)

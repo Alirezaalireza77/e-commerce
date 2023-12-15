@@ -1,4 +1,6 @@
 from shop.models import Product
+
+
 class Cart:
     def __init__(self, request):
         self.session = request.session
@@ -9,13 +11,15 @@ class Cart:
         # make sure cart is available in all pages
         self.cart = cart
 
-    def add(self, product):
+    def add(self, product, quantity):
         product_id = str(product.id)
+        product_qyy= str(quantity)
         # logic
         if product_id in self.cart:
             pass
         else:
-            self.cart[product_id] = {'price': str(product.price)}
+            # self.cart[product_id] = {'price': str(product.price)}
+            self.cart[product_id] = {'price': int(product_qyy)}
             self.session.modified = True
 
     def __len__(self):
@@ -28,3 +32,8 @@ class Cart:
         products = Product.objects.filter(id__in=product_ids)
 
         return products
+
+
+    def get_quants(self):
+        quantities = self.cart
+        return quantities
