@@ -11,5 +11,35 @@
                 </div>
             </div>
         </header>
+        <div class="container">
+        {% if cart_products %}
+            {% for product in cart_products %}
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                      <img src={{ product.picture.url }} class="img-fluid rounded-start"= alt="...">
+                    </div>
+                    <div class="col-md-8">
+                      <div class="card-body">
+                        <center>
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">{{ product.description }}</p>
+                        <p class="card-text"><small class="text-body-secondary">    قیمت این محصول:  {{ product.price }}</small></p>
+                        <a class="btn btn-secondary" href="{% url 'home' %}">بازگشت به صفحه قبل<a/>
+                        <button type='button' value='{{ product.id }}' class="btn btn-secondary" id="add-cart">افزودن به سبدخرید</button>
+                          <br>
+                        </center>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            {% endfor %}
+        {% else %}
+            چیزی در سبد خرید شما وجود ندارد...
+        {% endif %}
+        </div>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 {% endblock %}
