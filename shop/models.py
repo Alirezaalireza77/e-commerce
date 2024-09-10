@@ -24,10 +24,10 @@ class Customer(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(blank=True, default='')
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, default=Category)
-    price = models.DecimalField(max_digits=12, decimal_places=0, null=True, blank=True, default='')
-    picture = models.ImageField(upload_to='upload/product')
-    cast_price = models.DecimalField(decimal_places=0, max_digits=12, null=True, default='')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    price = models.DecimalField(max_digits=12, decimal_places=0, null=True, blank=True)
+    picture = models.ImageField(upload_to='upload/product', null=True)
+    cast_price = models.DecimalField(decimal_places=0, max_digits=12, null=True)
     is_sale = models.BooleanField(default=False)
     star = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(5)])
 
@@ -43,6 +43,7 @@ class Order(models.Model):
     address = models.TextField(max_length=1000, blank=False)
     phone = models.CharField(max_length=20, blank=False)
     date = models.DateField(auto_now=True)
+    # customer = models.ForeignKey(Customer,on_delete=models.PROTECT)
 
     def __str__(self):
         return self.product
