@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
 
 
 class Category(models.Model):
@@ -36,14 +37,41 @@ class Product(models.Model):
 
 
 class Order(models.Model):
+    status_choice=[
+        ('new', 'New'),
+        ('paid', 'Paid'),
+        ('sent', 'Sent'),
+        ('cancel', 'Cancel'),
+    ]
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1,)
-    status = models.BooleanField(default=True)
+    status = models.CharField(max_length=20, choices=status_choice, default='new')
     name = models.ForeignKey(Customer, on_delete=models.CASCADE)
     address = models.TextField(max_length=1000, blank=False)
     phone = models.CharField(max_length=20, blank=False)
-    date = models.DateField(auto_now=True)
-    # customer = models.ForeignKey(Customer,on_delete=models.PROTECT)
+    date = models.DateField(auto_now_add=True)
+    
+    def change_status(self, new_status):
+        if self.status == 'new':
+            if new_status in ['paid', 'cancel']:
+                self.status = new_status
+            else:
+                raise ValidationError('Invalid changing status from new.')
+        elif self.status == 'paid':
+            if self.status == 'sent':
+                self.status = new_status
+            else:
+                raise ValidationError('Invalid changing status from paid level.')
+        elif self.status =='sent':
+            raise ValidationError('your order sent to you and you cannot change status position.')
+        elif self.status =='cancel':
+            raise ValidationError('you cannot change status from cancel.')
+        else:
+            raise ValidationError('unknown status.')
+        self.save()
+
 
     def __str__(self):
-        return self.product
+        return f' order:{self.product} - status: {self.status}'
+    
+    
