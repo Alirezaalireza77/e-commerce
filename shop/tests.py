@@ -1,4 +1,5 @@
 
+from typing import Any
 from django.test import TestCase
 
 from .models import *
@@ -68,3 +69,27 @@ class OrderTestCase(TestCase):
 
 
 
+class OrderTestCase(TestCase):
+    def setUp(self):
+        category = Category.objects.create(name='test')
+        product = Product.objects.create(name='product', category=category)
+        self.user = Customer.objects.create(name='ali', lastname = 'tohidi', email='admin@gmail.com', phone_number='09121213123', password='1234')
+        self.order= Order.objects.create(name=self.user, product=product, status='new')
+        
+
+    def test_order_status_valid(self):
+        self.order.change_status('paid')
+        self.assertEqual(self.order.status, 'paid')
+        self.order.change_status('cancel')
+        self.assertEqual(self.order.status, 'cancel')
+
+    def test_order_status_invalid(self):
+        self.order.change_status('paid')
+        self.order.change_status('sent')
+        
+        with self.assertRaisesMessage(expected_exception=ValidationError, expected_message="Invalid status and you cannot change status from sent to next status."):
+            self.order.change_status('paid')
+            self.assertEqual(self.order.status, 'sent')
+
+    
+   
