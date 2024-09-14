@@ -68,7 +68,7 @@ class Order(models.Model):
     def change_status(self, new_status):
         current_status = self.status
         if new_status not in self.valid_status_changing.get(current_status, []):
-            raise ValidationError(f"Invalid status and you cannot change status from {current_status} to next status.") 
+            raise ValidationError(f"Invalid status and you cannot change status from {current_status} to {new_status}.") 
         self.status = new_status
         self.save()
         
