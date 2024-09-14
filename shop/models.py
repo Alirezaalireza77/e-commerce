@@ -1,6 +1,7 @@
-from django.db import models
+from django.db import models, transaction
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError   
+from datetime import datetime
 
 
 class Category(models.Model):
@@ -16,7 +17,8 @@ class Customer(models.Model):
     email = models.EmailField(blank=False, max_length=100)
     phone_number = models.CharField(blank=False, max_length=13)
     password = models.CharField(max_length=128)
-    address = models.TextField(max_length=10, default="", null=True, blank=True)
+    address = models.TextField(max_length=100, default="", null=True, blank=True)
+    is_active =models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.name}{self.lastname}'
@@ -34,6 +36,8 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
 
 
 class Order(models.Model):
@@ -58,37 +62,35 @@ class Order(models.Model):
     address = models.TextField(max_length=1000, blank=False)
     phone = models.CharField(max_length=20, blank=False)
     date = models.DateField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
 
-    
+    @transaction.atomic
     def change_status(self, new_status):
         current_status = self.status
-        if self.status not in self.valid_status_changing:
-            raise ValidationError(f"Invalid status and you cannot change status from {current_status} to next status.")
-
+        if new_status not in self.valid_status_changing.get(current_status, []):
+            raise ValidationError(f"Invalid status and you cannot change status from {current_status} to next status.") 
         self.status = new_status
         self.save()
-    
-    #def change_status(self, new_status):
-    #    if self.status == 'new':
-    #       if new_status in ['paid', 'cancel']:
-    #            self.status = new_status
-    #        else:
-    #            raise ValidationError('Invalid changing status from new.')
-    #    elif self.status == 'paid':
-    #        if self.status == 'sent':
-    #            self.status = new_status
-    #        else:
-    #            raise ValidationError('Invalid changing status from paid level.')
-    #    elif self.status =='sent':
-    #        raise ValidationError('your order sent to you and you cannot change status position.')
-    #    elif self.status =='cancel':
-    #        raise ValidationError('you cannot change status from cancel.')
-    #    else:
-    #        raise ValidationError('unknown status.')
-    #    self.save()
-
+        
+        
+        OrderStatusChangeLog.objects.create(
+        order = self,
+        old_status = current_status,
+        new_status = new_status,
+        changed_at = datetime.now())
     
     def __str__(self):
         return f' order:{self.product} - status: {self.status}'
     
 
+class OrderStatusChangeLog(models.Model):
+    order = models.ForeignKey('Order', on_delete=models.PROTECT)
+    old_status = models.CharField(max_length=20)
+    new_status = models.CharField(max_length=20)
+    changed_at = models.DateField(auto_now=False, auto_now_add=True)
+
+    def __str__(self):
+        return f' log:{self.old_status} changed to {self.new_status} at {self.changed_at}'
+    
+
+    

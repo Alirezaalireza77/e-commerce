@@ -1,5 +1,5 @@
 from shop.models import Product
-
+from .models import *
 
 class Cart:
     def __init__(self, request):
