@@ -4,7 +4,7 @@ import factory.django
 from shop.models import Category, Customer, Product, Order, OrderStatusChangeLog
 import factory
 from django.core.exceptions import ValidationError
-
+#create your factory tests here.
 
 class CategoryFactory(factory.django.DjangoModelFactory):
     class Meta:
