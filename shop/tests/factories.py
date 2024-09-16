@@ -12,8 +12,7 @@ class CategoryFactory(factory.django.DjangoModelFactory):
         model = Category
 
     name = factory.Faker('word')
-
-
+    
 
 class ProductFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -30,7 +29,7 @@ class CustomerFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Customer
 
-    email = factory.Faker('email')
+    email = factory.lazy_attribute(lambda o: '{}.{}@gmail.com'.format(o.name,o.lastname).lower())
     phone_number = factory.lazy_attribute(lambda o: "09"+"".join(choices(string.digits, k=7)))
     name = factory.Faker('first_name')
     lastname = factory.Faker('last_name')

@@ -5,6 +5,37 @@ import factory
 from django.core.exceptions import ValidationError
 from .factories import CategoryFactory, CustomerFactory, ProductFactory, OrderFactory, OrderStatusChangeLogFactory
 
+class CategoryTest(TestCase):
+
+    def test_get_three_last_parent(self):
+        top_category = CategoryFactory()
+        second_category = CategoryFactory(parent=top_category)
+        third_category = CategoryFactory(parent=second_category)
+        fourth_category = CategoryFactory(parent=third_category)
+        fifth_category = CategoryFactory(parent=fourth_category)
+
+        parents = fifth_category.get_three_last_parent()
+        self.assertEqual(len(parents), 3)
+        self.assertEqual(parents[0], fourth_category)
+        self.assertEqual(parents[1], third_category)
+        self.assertEqual(parents[2], second_category)
+
+
+    def test_get_three_last_parent_less_than_three_parents(self):
+        top_category = CategoryFactory()
+        second_category = CategoryFactory(parent=top_category)
+        third_category = CategoryFactory(parent=second_category)
+
+        parents = third_category.get_three_last_parent()
+        self.assertEqual(len(parents), 2)
+        self.assertEqual(parents[0], second_category)
+        self.assertEqual(parents[1], top_category)
+
+    def test_get_three_last_parent_no_parent(self):
+        category = CategoryFactory()
+        parents = category.get_three_last_parent()
+        self.assertEqual(len(parents), 0)
+
 
 class OrderTestCase(TestCase):
     def setUp(self):

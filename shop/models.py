@@ -6,7 +6,18 @@ from datetime import datetime
 
 class Category(models.Model):
     name = models.CharField(max_length=50)
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='children')
 
+    def get_three_last_parent(self):
+        parents = []
+        current = self.parent
+        while current is not None and len(parents) < 3:
+            parents.append(current)
+            current = current.parent
+        return parents[::-1]  
+
+
+        
     class Meta:
         verbose_name = 'Category'
         verbose_name_plural = 'Categories'
@@ -40,7 +51,7 @@ class Customer(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(blank=True, default='')
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.PROTECT)
     price = models.DecimalField(
         max_digits=12, decimal_places=0, null=True, blank=True)
     picture = models.ImageField(upload_to='upload/product', null=True, blank=True)
@@ -75,11 +86,11 @@ class Order(models.Model):
         'cancel': [],
     }
 
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
     quantity = models.IntegerField(default=1, validators=[MinValueValidator(1)])
     status = models.CharField(
         max_length=20, choices=status_choice, default='new')
-    name = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    name = models.ForeignKey(Customer, on_delete=models.PROTECT)
     address = models.TextField(max_length=100, blank=False)
     phone = models.CharField(max_length=11, blank=False)
     date = models.DateField(auto_now_add=True)
