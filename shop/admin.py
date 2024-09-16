@@ -5,7 +5,7 @@ class ProductCategoryInline(admin.TabularInline):
     model = Product
     fk_name = "category" 
     extra = 1
-    fields = ['name','price','star','cast_price','picture']
+    fields = ['name','price','star','cast_price']
 
 
 class OrderProductInline(admin.TabularInline):

@@ -1,6 +1,8 @@
 from .models import *
 from factory import DjangoModelFactory, Faker, factory
 import factory
+
+
 class CategoryFactory(DjangoModelFactory):
     class Meta:
         model = Category
@@ -23,6 +25,7 @@ class CustomerFactory(factory.django.DjangoModelFactory):
     email = Faker('email')
     phone_number = Faker('phone_number')
     password = Faker('password')
+    
 
 class OrderFactory(DjangoModelFactory):
     class Meta:

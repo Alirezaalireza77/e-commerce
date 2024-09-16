@@ -19,7 +19,7 @@ class Customer(models.Model):
     name = models.CharField(max_length=50)
     lastname = models.CharField(max_length=50)
     email = models.EmailField(blank=False, max_length=100)
-    phone_number = models.CharField(blank=False, max_length=13)
+    phone_number = models.CharField(blank=False, max_length=11)
     password = models.CharField(max_length=128)
     address = models.TextField(
         max_length=100,
@@ -34,7 +34,7 @@ class Customer(models.Model):
         verbose_name_plural = 'Customers'
 
     def __str__(self):
-        return f'{self.name}{self.lastname}'
+        return f'{self.name} {self.lastname}'
 
 
 class Product(models.Model):
@@ -76,12 +76,12 @@ class Order(models.Model):
     }
 
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=1)
+    quantity = models.IntegerField(default=1, validators=[MinValueValidator(1)])
     status = models.CharField(
         max_length=20, choices=status_choice, default='new')
     name = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    address = models.TextField(max_length=1000, blank=False)
-    phone = models.CharField(max_length=20, blank=False)
+    address = models.TextField(max_length=100, blank=False)
+    phone = models.CharField(max_length=11, blank=False)
     date = models.DateField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
 
@@ -93,9 +93,12 @@ class Order(models.Model):
     def clean(self):
         super().clean()
         if self.quantity < 1:
-            raise ValidationError(f'quentities of order must be 1 atleast.')
-        if not self.phone.isdigit:
-            raise ValidationError(f'phone number must contain only number.')
+            raise ValidationError('quentities of order must be 1 atleast.')
+        if not self.phone.isdigit():
+            raise ValidationError('phone number must contain only number.')
+        if not self.phone.startswith('09'):
+            raise ValidationError('phone number must be started with "09".')
+        
 
     @transaction.atomic
     def change_status(self, new_status):
