@@ -9,12 +9,12 @@ class Category(models.Model):
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='children')
 
     def get_three_last_parent(self):
-        parents = []
+        parents = [self]
         current = self.parent
         while current is not None and len(parents) < 3:
             parents.append(current)
             current = current.parent
-        return parents[::-1]  
+        return parents
 
 
         

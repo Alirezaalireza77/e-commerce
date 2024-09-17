@@ -8,7 +8,7 @@ from .factories import CategoryFactory, CustomerFactory, ProductFactory, OrderFa
 class CategoryTest(TestCase):
 
     def test_get_three_last_parent(self):
-        top_category = CategoryFactory()
+        top_category = CategoryFactory(name='laptop')
         second_category = CategoryFactory(parent=top_category)
         third_category = CategoryFactory(parent=second_category)
         fourth_category = CategoryFactory(parent=third_category)
@@ -16,9 +16,9 @@ class CategoryTest(TestCase):
 
         parents = fifth_category.get_three_last_parent()
         self.assertEqual(len(parents), 3)
-        self.assertEqual(parents[0], fourth_category)
-        self.assertEqual(parents[1], third_category)
-        self.assertEqual(parents[2], second_category)
+        self.assertEqual(parents[0], fifth_category)
+        self.assertEqual(parents[1], fourth_category)
+        self.assertEqual(parents[2], third_category)
 
 
     def test_get_three_last_parent_less_than_three_parents(self):
@@ -27,14 +27,14 @@ class CategoryTest(TestCase):
         third_category = CategoryFactory(parent=second_category)
 
         parents = third_category.get_three_last_parent()
-        self.assertEqual(len(parents), 2)
-        self.assertEqual(parents[0], second_category)
-        self.assertEqual(parents[1], top_category)
+        self.assertEqual(len(parents), 3)
+        self.assertEqual(parents[1], second_category)
+        self.assertEqual(parents[2], top_category)
 
     def test_get_three_last_parent_no_parent(self):
         category = CategoryFactory()
         parents = category.get_three_last_parent()
-        self.assertEqual(len(parents), 0)
+        self.assertEqual(len(parents), 1)
 
 
 class OrderTestCase(TestCase):
