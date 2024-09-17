@@ -14,7 +14,7 @@ class CustomerAdmin(admin.ModelAdmin):
                 'name',
                 'lastname',
                 'email',
-                'Phone_number',
+                'phone_number',
                 'address',
                 'is_active',
                 'password',
