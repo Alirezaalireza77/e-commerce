@@ -37,6 +37,53 @@ class CategoryTest(TestCase):
         self.assertEqual(len(parents), 1)
 
 
+class CustomerTestCase(TestCase):
+    def test_check_short_password(self):
+        customer = CustomerFactory()
+        customer.password = 'Azura12'
+        with self.assertRaises(ValidationError) as context:
+            customer.clean()
+        self.assertEqual(str(context.exception), "['password must has 8 charactor atlist.']")  
+
+    
+    def test_check_just_number_for_password(self):
+        customer = CustomerFactory()
+        customer.password = '12345678'
+        with self.assertRaises(ValidationError) as context:
+            customer.clean()
+        self.assertEqual(str(context.exception), "['password must contains atleast one charactor.']")
+
+
+    def test_check_only_letter_password(self):
+        customer = CustomerFactory()
+        customer.password = 'swertfef'
+        with self.assertRaises(ValidationError) as context:
+            customer.clean()
+        self.assertEqual(str(context.exception), "['password must has atleast one number.']")
+
+
+    def test_check_only_letter_without_uppercase(self):
+        customer = CustomerFactory()
+        customer.password = 'swkdkwd2'
+        with self.assertRaises(ValidationError) as context:
+            customer.clean()
+        self.assertEqual(str(context.exception), "['password must contains atleast one UPERCASE charactor.']")
+
+
+    def test_check_password_without_symbol(self):
+        customer = CustomerFactory()
+        customer.password = 'swe23SWr'
+        with self.assertRaises(ValidationError) as context:
+            customer.clean()
+        self.assertEqual(str(context.exception), "['password must has atleast one symbol.']")
+
+
+    def test_valid_password(self):
+        customer = CustomerFactory()
+        customer.password = 'sw123Ad@'
+        customer.clean()
+
+
 class OrderTestCase(TestCase):
     def setUp(self):
         self.order = OrderFactory()
@@ -54,9 +101,7 @@ class OrderTestCase(TestCase):
         order = OrderFactory()
         with self.assertRaises(ValidationError) as context:
             order.change_status('sent')
-        
-        self.assertEqual(str(context.exception), "['Invalid status and you cannot change status from new to sent.']")
-        
+        self.assertEqual(str(context.exception), "['Invalid status and you cannot change status from new to sent.']")   
         self.assertEqual(order.status, 'new')
 
     def test_change_status_log_from_cancel(self):

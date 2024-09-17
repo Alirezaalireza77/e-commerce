@@ -5,6 +5,7 @@ from shop.models import Category, Customer, Product, Order, OrderStatusChangeLog
 from django.core.exceptions import ValidationError
 from random import choices
 import string
+import re
 
 
 class CategoryFactory(factory.django.DjangoModelFactory):
@@ -33,7 +34,7 @@ class CustomerFactory(factory.django.DjangoModelFactory):
     phone_number = factory.lazy_attribute(lambda o: "09"+"".join(choices(string.digits, k=7)))
     name = factory.Faker('first_name')
     lastname = factory.Faker('last_name')
-    password = factory.Faker('password')
+    password = factory.lazy_attribute(lambda o : "".join(choices(string.ascii_letters + string.digits + "!@#$%^&*", k=10)))
     
 
 class OrderFactory(factory.django.DjangoModelFactory):

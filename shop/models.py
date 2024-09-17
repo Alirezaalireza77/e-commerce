@@ -2,6 +2,7 @@ from django.db import models, transaction
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 from datetime import datetime
+import re
 
 
 class Category(models.Model):
@@ -10,10 +11,10 @@ class Category(models.Model):
 
     def get_three_last_parent(self):
         parents = [self]
-        current = self.parent
-        while current is not None and len(parents) < 3:
-            parents.append(current)
-            current = current.parent
+        current_parent = self.parent
+        while current_parent is not None and len(parents) < 3:
+            parents.append(current_parent)
+            current_parent = current_parent.parent
         return parents
 
 
@@ -43,6 +44,20 @@ class Customer(models.Model):
     class Meta:
         verbose_name = 'Customer'
         verbose_name_plural = 'Customers'
+
+
+    def clean(self):
+        super().clean()
+        if len(self.password) < 8:
+            raise ValidationError('password must has 8 charactor atlist.')
+        if not re.search(r"[0-9]", self.password):
+            raise ValidationError('password must has atleast one number.')
+        if not re.search(r"[a-z]", self.password):
+            raise ValidationError('password must contains atleast one charactor.')
+        if not re.search(r"[A-Z]", self.password):
+            raise ValidationError('password must contains atleast one UPERCASE charactor.')
+        if not re.search(r"[!|@|#|$|%|&|*]", self.password):
+            raise ValidationError('password must has atleast one symbol.')
 
     def __str__(self):
         return f'{self.name} {self.lastname}'
