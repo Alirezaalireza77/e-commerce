@@ -1,11 +1,5 @@
-from typing import Any
-from django.test import TestCase
-import factory
-from shop.models import Category, Customer, Product, Order, OrderStatusChangeLog
-from django.core.exceptions import ValidationError
-from random import choices
-import string
-import re
+import factory  
+from shop.models import Category, Product
 
 
 class CategoryFactory(factory.django.DjangoModelFactory):
@@ -26,31 +20,4 @@ class ProductFactory(factory.django.DjangoModelFactory):
 
 
 
-class CustomerFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = Customer
-
-    email = factory.lazy_attribute(lambda o: '{}.{}@gmail.com'.format(o.name,o.lastname).lower())
-    phone_number = factory.lazy_attribute(lambda o: "09"+"".join(choices(string.digits, k=7)))
-    name = factory.Faker('first_name')
-    lastname = factory.Faker('last_name')
-    password = factory.lazy_attribute(lambda o : "".join(choices(string.ascii_letters + string.digits + "!@#$%^&*", k=10)))
     
-
-class OrderFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = Order
-
-    name = factory.SubFactory(CustomerFactory)
-    product = factory.SubFactory(ProductFactory)
-    phone = factory.lazy_attribute(lambda o: "09"+"".join(choices(string.digits, k=7)))
-    quantity = factory.Faker('random_int', min=1, max=100)
-    address = factory.Faker('address')
-
-class OrderStatusChangeLogFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = OrderStatusChangeLog
-
-    order = factory.SubFactory(OrderFactory)
-    old_status = factory.Faker('random_element', elements=['new','cancel','paid','sent'])
-    new_status = factory.Faker('random_element', elements=['new','cancel','paid','sent'])
