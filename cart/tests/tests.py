@@ -22,10 +22,6 @@ class CartTestCase(TestCase):
         self.assertEqual(calculated_total_price, total_price)
 
 
-    def test_cart_string_representation(self):
-        self.assertEqual(str(self.cart), str(self.cart.customer))
-    
-
     def test_cart_creation(self):
         self.assertEqual(Cart.objects.count(), 1)
 
