@@ -49,7 +49,6 @@ class OrderStatusChangeLogAdmin(admin.ModelAdmin):
             "fields": ('order',
                        'old_status',
                        'new_status',
-                       'changed_at',
                     ),
                }), 
             )

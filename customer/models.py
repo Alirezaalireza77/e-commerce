@@ -15,7 +15,7 @@ class Customer(models.Model):
         null=True,
         blank=True
     )
-    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Customer'

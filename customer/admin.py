@@ -5,7 +5,7 @@ from .models import Customer
 # Register your models here.
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ['name','lastname','email','phone_number','is_active']
+    list_display = ['name','lastname','email','phone_number','is_staff']
     list_filter = ['phone_number','email']
     search_fields = ['phone_number','id']
     fieldsets = (
@@ -16,7 +16,7 @@ class CustomerAdmin(admin.ModelAdmin):
                 'email',
                 'phone_number',
                 'address',
-                'is_active',
+                'is_staff',
                 'password',
                 
             ),
