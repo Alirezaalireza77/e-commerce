@@ -1,4 +1,5 @@
 from rest_framework import generics, status
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import Cart, CartItem
@@ -9,7 +10,7 @@ from shop.models import Product
 class CartItemView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
 
-    def add(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         cart = Cart.objects.get(customer=request.user)
         product_id = request.data.get('product_id')
         cart_item, created = CartItem.objects.get_or_create(cart=cart, product_id=product_id)
@@ -47,7 +48,7 @@ class CartItemView(generics.GenericAPIView):
             return Response({"detail" : "cart item not found."}, status= status.HTTP_404_NOT_FOUND)
         
 
-    def update(self, request, *args, **kwargs):
+    def put(self, request, *args, **kwargs):
         cart_item_id = request.data.get('cart_item_id')
         quantity = request.data.get('quantity')
         try:
@@ -68,4 +69,10 @@ class CartItemView(generics.GenericAPIView):
         return Product.objects.filter(cart_item__in=cart_item)
 
 
-            
+class CartItemListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        cart_items = CartItem.objects.filter(customer=request.user)
+        serializer = CartSerializer(cart_items, many=True)
+        return Response(serializer.data, status =status.HTTP_200_OK)
