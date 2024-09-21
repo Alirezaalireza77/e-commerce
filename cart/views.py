@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import Cart, CartItem
 from .serializers import CartItemSerializer, CartSerializer
+from shop.models import Product
 
 
 class CartItemView(generics.GenericAPIView):
@@ -60,8 +61,11 @@ class CartItemView(generics.GenericAPIView):
                 return Response(serializer.data, status=status.HTTP_200_OK)
         except cart_item.DoesNotExist:
             return Response ({"detail": "cart item not found"},status=status.HTTP_404_NOT_FOUND)
+       
         
-    
+    def get_queryset(self):
+        cart_item = CartItem.objects.filter(customer=self.request.user)
+        return Product.objects.filter(cart_item__in=cart_item)
 
 
             
