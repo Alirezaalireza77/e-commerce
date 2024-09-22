@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Cart, CartItem
 from .serializers import CartItemSerializer, CartSerializer
 from shop.models import Product
-
+import uuid
 
 
 class CartItemViewSet(mixin.CreateModelMixib,
@@ -16,6 +16,20 @@ class CartItemViewSet(mixin.CreateModelMixib,
                       GenericViewSet
                       ):
     permission_classes = [AllowAny]
+
+
+
+    def get_cart(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            cart, created = Cart.objects.get_or_create(customer=request.user)
+        else:
+            cart_token = request.data.get('cart_token')
+            if not cart_token:
+                cart_token = str(uuid.uuid4())
+                cart, created = Cart.objects.get_or_create(token=cart_token)
+            cart,created = Cart.objects.get_or_create(token=cart_token)
+        return cart
+    
 
 
     def create(self, request, *args, **kwargs):
