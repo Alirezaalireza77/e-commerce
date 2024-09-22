@@ -1,4 +1,5 @@
 from rest_framework import generics, status
+from rest_framework.viewsets import GenericViewSet
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -21,7 +22,7 @@ class CartItemView(generics.GenericAPIView):
             cart_item.save()
         else:
             cart_item.quantity = quantity
-            cart_item.price = cart_item.product.price
+            cart_item.price = cart.calculate_total_price()
             cart_item.save()
 
         cart.calculate_total_price()
@@ -64,15 +65,12 @@ class CartItemView(generics.GenericAPIView):
             return Response ({"detail": "cart item not found"},status=status.HTTP_404_NOT_FOUND)
        
         
-    def get_queryset(self):
-        cart_item = CartItem.objects.filter(customer=self.request.user)
-        return Product.objects.filter(cart_item__in=cart_item)
-
-
-class CartItemListView(APIView):
+class CartItemList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        cart_items = CartItem.objects.filter(customer=request.user)
-        serializer = CartSerializer(cart_items, many=True)
-        return Response(serializer.data, status =status.HTTP_200_OK)
+    def list(self, request, *args, **kwargs):
+        customer = request.data.get('customer')
+        queryset = CartItem.objects.filter(customer)
+        serializer = CartSerializer(queryset, many=True)
+        return Response(serializer.data)
+        
