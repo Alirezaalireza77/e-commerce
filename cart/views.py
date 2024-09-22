@@ -1,17 +1,24 @@
-from rest_framework import generics, status
+from rest_framework import generics, status, mixin
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Cart, CartItem
 from .serializers import CartItemSerializer, CartSerializer
 from shop.models import Product
 
 
-class CartItemView(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated]
 
-    def post(self, request, *args, **kwargs):
+class CartItemViewSet(mixin.CreateModelMixib,
+                      mixin.DestroyModelMixin,
+                      mixin.UpdateModelMixin,
+                      mixin.RetrieveModelMixin,
+                      GenericViewSet
+                      ):
+    permission_classes = [AllowAny]
+
+
+    def create(self, request, *args, **kwargs):
         cart = Cart.objects.get(customer=request.user)
         product_id = request.data.get('product_id')
         cart_item, created = CartItem.objects.get_or_create(cart=cart, product_id=product_id)
@@ -30,7 +37,7 @@ class CartItemView(generics.GenericAPIView):
         return Response(serializer.data, status=status.HTTP_201_created)
         
 
-    def delete(self, request, *args, **kwargs):
+    def destroy(self, request, *args, **kwargs):
         cart_item_id = request.data.get('cart_item_id')
         quantity = request.data.get('quantity')
         try:
@@ -49,7 +56,7 @@ class CartItemView(generics.GenericAPIView):
             return Response({"detail" : "cart item not found."}, status= status.HTTP_404_NOT_FOUND)
         
 
-    def put(self, request, *args, **kwargs):
+    def update(self, request, *args, **kwargs):
         cart_item_id = request.data.get('cart_item_id')
         quantity = request.data.get('quantity')
         try:
@@ -65,12 +72,13 @@ class CartItemView(generics.GenericAPIView):
             return Response ({"detail": "cart item not found"},status=status.HTTP_404_NOT_FOUND)
        
         
-class CartItemList(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
+class CartItemListViewset(mixin.ListModelMixin,GenericViewSet):
+    permission_classes = [AllowAny]
+    serializer_class = CartSerializer
 
     def list(self, request, *args, **kwargs):
-        customer = request.data.get('customer')
-        queryset = CartItem.objects.filter(customer)
-        serializer = CartSerializer(queryset, many=True)
+        cart = Cart.objects.get(customer=request.user)
+        queryset = CartItem.objects.filter(cart=cart)
+        serializer = CartItemSerializer(queryset, many=True)
         return Response(serializer.data)
         
