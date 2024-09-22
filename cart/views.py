@@ -23,11 +23,11 @@ class CartItemViewSet(mixin.CreateModelMixib,
         if request.user.is_authenticated:
             cart, created = Cart.objects.get_or_create(customer=request.user)
         else:
-            cart_token = request.data.get('cart_token')
-            if not cart_token:
-                cart_token = str(uuid.uuid4())
-                cart, created = Cart.objects.get_or_create(token=cart_token)
-            cart,created = Cart.objects.get_or_create(token=cart_token)
+            cart_key = request.data.get('cart_key')
+            if not cart_key:
+                cart_key = str(uuid.uuid4())
+                cart, created = Cart.objects.get_or_create(cart_key=cart_key)
+            cart,created = Cart.objects.get_or_create(cart_key=cart_key)
         return cart
     
 
