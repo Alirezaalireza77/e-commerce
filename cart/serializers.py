@@ -1,14 +1,14 @@
-from rest_framework import seralizers
+from rest_framework import serializers
 from .models import Cart, CartItem
 
 
-class CartSerializaer(seralizers.ModelSerializer):
+class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
-        fields = ['customer', 'created_at', 'changed_at', 'total_amount']
+        fields = ['user', 'created_at', 'cart_key', 'changed_at', 'total_amount']
 
 
-class CartItemSeralizer(seralizers.ModelSerializer):
+class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = CartItem
         fields = ['cart', 'product', 'quantity', 'price']

@@ -19,8 +19,8 @@ class OrderProductInline(admin.TabularInline):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['product','status','name','phone','is_active']
-    list_filter = ['status','name','phone']
+    list_display = ['product','status','user','phone','is_active']
+    list_filter = ['status','user','phone']
     search_fields = ['name']
     inlines = [OrderChangeInline]
     fieldsets = (
@@ -29,7 +29,7 @@ class OrderAdmin(admin.ModelAdmin):
                 'product',
                 'quantity',
                 'status',
-                'name',
+                'user',
                 'phone',
                 'is_active',
                 'address',

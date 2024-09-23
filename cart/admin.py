@@ -13,14 +13,14 @@ class CartItemCartInline(admin.TabularInline):
 
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
-    list_display = ['customer','created_at','total_amount']
-    search_fields = ['customer']
-    list_filter = ['id', 'customer']
+    list_display = ['user','created_at','total_amount']
+    search_fields = ['user']
+    list_filter = ['id', 'user']
     inlines = [CartItemCartInline]
     fieldsets = (
         ('Cart', {
             "fields": (
-                'customer',
+                'user',
                 'total_amount',
             ),
         }),

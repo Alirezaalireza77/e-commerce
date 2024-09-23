@@ -5,7 +5,7 @@ from rest_framework import serializers
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ['product', 'quantity', 'status', 'name', 'address', 'phone', 'date', 'is_active']
+        fields = ['product', 'quantity', 'status', 'user', 'address', 'phone', 'date', 'is_active']
 
 
 class OrderStatusChangeLogSerializer(serializers.ModelSerializer):

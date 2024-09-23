@@ -1,16 +1,25 @@
 from order.models import Order, OrderStatusChangeLog
 import factory 
-from customer.tests.factories import CustomerFactory
+from django.contrib.auth.models import User
 from shop.tests.factories import CategoryFactory, ProductFactory
 import string
 from random import choices
+
+
+
+class UserFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = User
+
+    username = factory.Faker('user_name')
+    email = factory.Faker('email')
 
 
 class OrderFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Order
 
-    name = factory.SubFactory(CustomerFactory)
+    user = factory.SubFactory(UserFactory)
     product = factory.SubFactory(ProductFactory)
     phone = factory.lazy_attribute(lambda o: "09"+"".join(choices(string.digits, k=7)))
     quantity = factory.Faker('random_int', min=1, max=100)

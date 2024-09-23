@@ -2,7 +2,7 @@ from django.db import models, transaction
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from shop.models import Product
-from customer.models import Customer
+from django.contrib.auth.models import User
 from datetime import datetime
 
 
@@ -26,7 +26,7 @@ class Order(models.Model):
     quantity = models.IntegerField(default=1, validators=[MinValueValidator(1)])
     status = models.CharField(
         max_length=20, choices=status_choice, default='new')
-    name = models.ForeignKey(Customer, on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
     address = models.TextField(max_length=100, blank=False)
     phone = models.CharField(max_length=11, blank=False)
     date = models.DateField(auto_now_add=True)

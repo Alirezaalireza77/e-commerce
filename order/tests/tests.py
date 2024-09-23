@@ -2,6 +2,8 @@ from django.test import TestCase
 from .factories import OrderFactory, OrderStatusChangeLogFactory
 from django.core.exceptions import ValidationError
 # Create your tests here.
+
+
 class OrderTestCase(TestCase):
     def setUp(self):
         self.order = OrderFactory()

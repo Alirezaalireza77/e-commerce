@@ -1,14 +1,21 @@
 from cart.models import Cart, CartItem
-from customer.tests.factories import CustomerFactory
 from shop.tests.factories import ProductFactory
 import factory
+from django.contrib.auth.models import User
 
+
+class UserFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = User
+
+    username = factory.Faker('user_name')
+    email = factory.lazy_attribute(lambda o: '{}@gmail.com'.format(o.username))
 
 
 class CartFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Cart
-    customer = factory.SubFactory(CustomerFactory)
+    user = factory.SubFactory(UserFactory)
     total_amount = factory.Faker('random_int', min=0)
 
 
