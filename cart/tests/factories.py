@@ -9,7 +9,7 @@ class UserFactory(factory.django.DjangoModelFactory):
         model = User
 
     username = factory.Faker('user_name')
-    email = factory.lazy_attribute(lambda o: '{}@gmail.com'.format(o.username))
+    email = factory.Faker('email')
 
 
 class CartFactory(factory.django.DjangoModelFactory):

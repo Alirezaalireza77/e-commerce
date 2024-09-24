@@ -123,16 +123,21 @@ class CartViewSet(mixins.DestroyModelMixin,
 
 
     def create(self, request, *args, **kwargs):
-       serializer = self.get_serializer()
-       cart = serializer.create(user=request.user)
-       return Response(serializer(cart).data, status=status.HTTP_201_CREATED)
+       serializer = self.get_serializer(data={'user':request.user})
+       serializer.is_valid(raise_exception=True)
+       serializer.save()
+       return Response(serializer.data, status=status.HTTP_201_CREATED)
     
 
 
     def destroy(self, request, *args, **kwargs):
         serializer = self.get_serializer()
-        cart = serializer.destroy(user=request.user)
-        return Response({'message':'cart was deleted.'})
+        try:
+            cart = Cart.objects.get(user=request.user)
+            cart.delete()
+            return Response({'message': 'cart was deleted.'}, status=status.HTTP_200_OK)
+        except:
+            return Response({'message':'cart does not exist.'}, status=status.HTTP_404_NOT_FOUND)
     
 
 class CartItemViewSet(mixins.CreateModelMixin,
@@ -141,29 +146,32 @@ class CartItemViewSet(mixins.CreateModelMixin,
 
     queryset = CartItem.objects.all()
     permission_classes = [AllowAny]
-
+    serializer_class = CartItemSerializer
 
     def create(self, request, *args, **kwargs):
-        cart_serializer = CartSerializer
-        cart = cart_serializer.create(user=request.user)
+        cart, _ = Cart.objects.get_or_create(user=request.user)
+        data = {
+            'cart': cart.id,
+            'product': request.data.get('product_id'),
+            'quantity': request.data.get('quantity', 1)
+        }
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.add_item(serializer.validated_data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
 
-        cartitem_serializer = CartItemSerializer
-        product_id = request.data.get('product_id')
-        quantity = request.data.get('quantity', 1)
-
-        cartitem_serializer.add_item(cart, product_id, quantity)
-        return Response(cartitem_serializer(cart).data, status=status.HTTP_201_CREATED)
     
 
     def update(self, request, *args, **kwargs):
-        cart_serializer = CartSerializer
-        cart = cart_serializer.create(user=request.user)
-
-        cartitem_serializer = CartItemSerializer
-        product_id = request.data.get('product_id')
-        quantity = request.data.get('quantity', None)
-        
-        cartitem_serializer.remove_item(cart, product_id, quantity)
-        return Response(cartitem_serializer(cart).data, status=status.HTTP_200_OK)
-
+        cart = Cart.objects.get(user=request.user)
+        data={
+            'cart': cart.id,
+            'product': request.data.get('product_id'),
+            'quantity': request.data.get('quantity')
+        }
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.remove_item(serializer.validated_data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
         
