@@ -142,11 +142,13 @@ class CartViewSet(mixins.DestroyModelMixin,
 
 class CartItemViewSet(mixins.CreateModelMixin,
                        mixins.UpdateModelMixin,
+                       mixins.RetrieveModelMixin,
                          GenericViewSet):
 
     queryset = CartItem.objects.all()
     permission_classes = [AllowAny]
     serializer_class = CartItemSerializer
+
 
     def create(self, request, *args, **kwargs):
         cart, _ = Cart.objects.get_or_create(user=request.user)
@@ -175,3 +177,16 @@ class CartItemViewSet(mixins.CreateModelMixin,
         serializer.remove_item(serializer.validated_data)
         return Response(serializer.data, status=status.HTTP_200_OK)
         
+
+
+    def retrieve(self, request, *args, **kwargs):
+        cart = Cart.objects.get(user=request.user)
+        data={
+            'cart': cart.id,
+            'product': request.data.get('product'),
+            'quantity': request.data.get('quantity'),
+        }
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(eaise_exception=True)
+        serializer.total_amount(serializer.validated_data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
