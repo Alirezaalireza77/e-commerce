@@ -19,7 +19,7 @@ class Cart(models.Model):
     def calculate_total_price(self):
         total_price = 0
         total_quantity = 0
-        cart_items = self.cartitem_set.all()
+        cart_items = self.item.all()
 
         for product in cart_items:
             total_price += product.product.price * product.quantity
@@ -36,7 +36,7 @@ class Cart(models.Model):
 
 
 class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.PROTECT)
+    cart = models.ForeignKey(Cart, on_delete=models.PROTECT, related_name='item')
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField(default=0)
     price = models.DecimalField(max_digits=12, decimal_places=0)
