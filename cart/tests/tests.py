@@ -47,4 +47,7 @@ class CartViewSetTest(APITestCase):
 
 
     def test_destroy_cart(self):
-        pass
+        cart = CartFactory(user=self.user)
+        url = reverse('cart-detail', args=[cart.id])
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 200)
