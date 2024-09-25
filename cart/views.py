@@ -180,13 +180,9 @@ class CartItemViewSet(mixins.CreateModelMixin,
 
 
     def retrieve(self, request, *args, **kwargs):
-        cart = Cart.objects.get(user=request.user)
-        data={
-            'cart': cart.id,
-            'product': request.data.get('product'),
-            'quantity': request.data.get('quantity'),
-        }
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(eaise_exception=True)
-        serializer.total_amount(serializer.validated_data)
+        try:
+            cart = Cart.objects.get(user=request.user)
+        except Cart.DoesNotExist:
+            return Response({'message': 'cart does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = self.get_serializer(cart)
         return Response(serializer.data, status=status.HTTP_200_OK)
