@@ -16,25 +16,19 @@ class Cart(models.Model):
         verbose_name_plural = 'Carts'
 
 
+
     def calculate_total_price(self):
-        total_price = sum(item.product.price * item.product.quantity for item in self.item.all())
+        total_price = 0
+        total_quantity = 0
+        cart_items = self.item.all()
+
+        for product in cart_items:
+            total_price += product.product.price * product.quantity
+            total_quantity += product.quantity
+
         self.total_amount = total_price
         self.save()
-        return total_price
-
-
-    # def calculate_total_price(self):
-    #     total_price = 0
-    #     total_quantity = 0
-    #     cart_items = self.item.all()
-
-    #     for product in cart_items:
-    #         total_price += product.product.price * product.quantity
-    #         total_quantity += product.quantity
-
-    #     self.total_amount = total_price
-    #     self.save()
-    #     return self.total_amount, total_price
+        return self.total_amount, total_price
 
 
     def __str__(self):

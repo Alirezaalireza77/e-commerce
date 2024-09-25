@@ -44,16 +44,14 @@ class CartItemSerializer(serializers.ModelSerializer):
         
 
 class CartSerializer(serializers.ModelSerializer):
-    items = CartItemSerializer(many=True, source='item')
+    items = CartItemSerializer(many=True, source='item', read_only=True)
     class Meta:
         model = Cart
-        fields = ['user', 'created_at', 'cart_key', 'changed_at', 'total_amount']
+        fields = ['user', 'created_at', 'total_amount', 'cart_key', 'items']
 
 
-    def total_amount(self, user):
-        user = user if user.is_authenticated else None
-        cart = Cart.objects.get(user=user)
-        return cart.calculate_total_price()
+    def total_amount(self, obj):
+        return obj.calculate_total_price()
 
 
     def create(self, user):

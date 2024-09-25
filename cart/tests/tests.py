@@ -2,7 +2,8 @@ from django.test import TestCase
 from cart.models import Cart, CartItem
 from .factories import CartFactory, CartItemFactory, ProductFactory, UserFactory
 from cart.serializers import CartItemSerializer, CartSerializer
-
+from rest_framework.test import APITestCase
+from django.urls import reverse
 # Create your tests here.
 
 class CartTestCase(TestCase):
@@ -33,23 +34,17 @@ class CartTestCase(TestCase):
 
 
 
-class CartItemSerializerTestCase(TestCase):
+class CartViewSetTest(APITestCase):
     def setUp(self):
         self.user = UserFactory()
-        self.cart = CartFactory(user=self.user)
-        self.product = ProductFactory()
+        self.client.force_login(user=self.user)
 
 
-    def test_add_item(self):
-        serializer_data = {
-            'cart': self.cart.id,
-            'product': self.product.id,
-            'quantity': 2,
-        }
+    def test_create_cart(self):
+        url = reverse('cart-list')
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 201)
 
-        serializer = CartItemSerializer(data=serializer_data)
-        self.assertTrue(serializer.is_valid())
-        serializer.add_item(serializer.validated_data, serializer.errors)
 
-        cart_item = CartItem.objects.get(cart=self.cart, product=self.product)
-        self.assertEqual(cart_item.quantity, 2)
+    def test_destroy_cart(self):
+        pass
