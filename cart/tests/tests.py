@@ -43,7 +43,6 @@ class CartViewSetTest(APITestCase):
     def test_create_cart(self):
         url = reverse('cart-list')
         response = self.client.post(url)
-        print(response.data)
         self.assertEqual(response.status_code, 201)
 
 
@@ -52,3 +51,27 @@ class CartViewSetTest(APITestCase):
         url = reverse('cart-detail', args=[cart.id])
         response = self.client.delete(url)
         self.assertEqual(response.status_code, 200)
+        self.assertFalse(Cart.objects.filter(user=self.user).exists())
+
+    def test_cart_not_exist(self):
+        url = reverse('cart-detail', args=[000])
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 404)
+        self.assertFalse(Cart.objects.filter(user=self.user).exists())
+
+
+
+class CartItemViewSetTestCase(APITestCase):
+    def setUp(self):
+        self.user = UserFactory()
+        self.product = ProductFactory()
+        self.cart = CartFactory()
+        self.client.force_login(user=self.user)
+        
+
+    def test_add_item_to_cart(self):
+        url = reverse('cartitem-list')
+        data = {'product_id': self.product.id, 'quantity': 2}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 201)
+        

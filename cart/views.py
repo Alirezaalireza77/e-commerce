@@ -164,8 +164,9 @@ class CartItemViewSet(mixins.CreateModelMixin,
 
 
     def create(self, request, *args, **kwargs):
+        cart_key = str(uuid.uuid4())
         user = request.user if request.user.is_authenticated else None
-        cart, _ = Cart.objects.get_or_create(user=user)
+        cart, _ = Cart.objects.get_or_create(user=user, cart_key=cart_key)
         data = {
             'cart': cart.id,
             'product': request.data.get('product_id'),
