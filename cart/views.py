@@ -114,6 +114,7 @@ import uuid
 
 class CartViewSet(mixins.DestroyModelMixin,
                   mixins.CreateModelMixin,
+                  mixins.RetrieveModelMixin,
                   GenericViewSet):
                   
     
@@ -123,26 +124,38 @@ class CartViewSet(mixins.DestroyModelMixin,
 
 
     def create(self, request, *args, **kwargs):
-       serializer = self.get_serializer(data={'user':request.user})
-       serializer.is_valid(raise_exception=True)
-       serializer.save()
+       user = request.user if request.user.is_authenticated else None
+       cart, created = Cart.objects.get_or_create(user=user)
+       serializer = self.get_serializer()
        return Response(serializer.data, status=status.HTTP_201_CREATED)
     
 
 
     def destroy(self, request, *args, **kwargs):
-        serializer = self.get_serializer()
+        user = request.user if request.user.is_authenticated else None
         try:
-            cart = Cart.objects.get(user=request.user)
+            cart = Cart.objects.get(user=user)
             cart.delete()
             return Response({'message': 'cart was deleted.'}, status=status.HTTP_200_OK)
         except:
             return Response({'message':'cart does not exist.'}, status=status.HTTP_404_NOT_FOUND)
     
 
+    def retrieve(self, request, *args, **kwargs):
+        user = request.user if request.user.is_authenticated else None
+        try:
+            cart = Cart.objects.get(user=user)
+        except Cart.DoesNotExist:
+            return Response({'message': 'cart does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = self.get_serializer(cart)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+
 class CartItemViewSet(mixins.CreateModelMixin,
                        mixins.UpdateModelMixin,
-                       mixins.RetrieveModelMixin,
                          GenericViewSet):
 
     queryset = CartItem.objects.all()
@@ -151,7 +164,8 @@ class CartItemViewSet(mixins.CreateModelMixin,
 
 
     def create(self, request, *args, **kwargs):
-        cart, _ = Cart.objects.get_or_create(user=request.user)
+        user = request.user if request.user.is_authenticated else None
+        cart, _ = Cart.objects.get_or_create(user=user)
         data = {
             'cart': cart.id,
             'product': request.data.get('product_id'),
@@ -166,7 +180,8 @@ class CartItemViewSet(mixins.CreateModelMixin,
     
 
     def update(self, request, *args, **kwargs):
-        cart = Cart.objects.get(user=request.user)
+        user = request.user if request.user.is_authenticated else None
+        cart = Cart.objects.get(user=user)
         data={
             'cart': cart.id,
             'product': request.data.get('product_id'),
@@ -179,10 +194,3 @@ class CartItemViewSet(mixins.CreateModelMixin,
         
 
 
-    def retrieve(self, request, *args, **kwargs):
-        try:
-            cart = Cart.objects.get(user=request.user)
-        except Cart.DoesNotExist:
-            return Response({'message': 'cart does not exist.'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = self.get_serializer(cart)
-        return Response(serializer.data, status=status.HTTP_200_OK)

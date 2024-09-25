@@ -43,6 +43,7 @@ class CartViewSetTest(APITestCase):
     def test_create_cart(self):
         url = reverse('cart-list')
         response = self.client.post(url)
+        print(response.data)
         self.assertEqual(response.status_code, 201)
 
 
