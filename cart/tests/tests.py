@@ -71,7 +71,8 @@ class CartItemViewSetTestCase(APITestCase):
 
     def test_add_item_to_cart(self):
         url = reverse('cartitem-list')
-        data = {'product_id': self.product.id, 'quantity': 2}
+        data = {'product_id': self.product.id, 'quantity': 2, 'price': self.product.price}
         response = self.client.post(url, data)
+        print(response.data)
         self.assertEqual(response.status_code, 201)
         
