@@ -36,18 +36,17 @@ class CartViewSet(mixins.DestroyModelMixin,
             return Response({'message': 'cart was deleted.'}, status=status.HTTP_200_OK)
         except:
             return Response({'message':'cart does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+        
+
+    def get_queryset(self):
+        user = self.request.user
+        return Cart.objects.filter(user=user)
     
 
     def retrieve(self, request, *args, **kwargs):
-        user = request.user if request.user.is_authenticated else None
-        try:
-            cart = Cart.objects.get(user=user)
-        except Cart.DoesNotExist:
-            return Response({'message': 'cart does not exist.'}, status=status.HTTP_404_NOT_FOUND)
-        
-        serializer = self.get_serializer(cart)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 
 

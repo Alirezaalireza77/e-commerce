@@ -53,11 +53,20 @@ class CartViewSetTest(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertFalse(Cart.objects.filter(user=self.user).exists())
 
+
     def test_cart_not_exist(self):
         url = reverse('cart-detail', args=[000])
         response = self.client.delete(url)
         self.assertEqual(response.status_code, 404)
         self.assertFalse(Cart.objects.filter(user=self.user).exists())
+
+
+    def test_list_of_item_of_cart(self):
+        cart = CartFactory(user=self.user)
+        url = reverse('cart-detail', args=[cart.id])
+        response = self.client.get(url)
+        print(response.data)
+        self.assertEqual(response.status_code, 200)
 
 
 
@@ -73,7 +82,6 @@ class CartItemViewSetTestCase(APITestCase):
         url = reverse('cartitem-list')
         data = {'product_id': self.product.id, 'quantity': 2, 'price': self.product.price}
         response = self.client.post(url, data)
-        print(response.data)
         self.assertEqual(response.status_code, 201)
         
 
@@ -82,5 +90,8 @@ class CartItemViewSetTestCase(APITestCase):
         url = reverse('cartitem-detail', args=[cart_item.id])
         data = {'quantity': 1, 'product_id': self.product.id, 'price': self.product.price}
         response = self.client.put(url, data)
-        print(response.data)
         self.assertEqual(response.status_code, 200)
+
+    
+   
+        
