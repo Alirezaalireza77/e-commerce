@@ -27,13 +27,14 @@ class CartItemSerializer(serializers.ModelSerializer):
 
     
     def remove_item(self, validated_data):
-        cart_item_id = validated_data.get('cart_item_id')
+        cart = validated_data.get('cart')
         quantity = validated_data.get('quantity')
+        product = validated_data.get('product')
 
         try:
-            cart_item = CartItem.objects.get(id=cart_item_id, quantity=quantity)
-            if quantity > 1:
-                quantity -= 1
+            cart_item = CartItem.objects.get(cart=cart, product=product)
+            if cart_item.quantity > quantity:
+                cart_item.quantity -= quantity
                 cart_item.save()
                 cart_item.cart.calculate_total_price()
             cart_item.delete()

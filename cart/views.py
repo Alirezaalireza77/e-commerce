@@ -83,10 +83,12 @@ class CartItemViewSet(mixins.CreateModelMixin,
     def update(self, request, *args, **kwargs):
         user = request.user if request.user.is_authenticated else None
         cart = Cart.objects.get(user=user)
+        product = Product.objects.get(id=request.data.get('product_id'))
         data={
             'cart': cart.id,
             'product': request.data.get('product_id'),
-            'quantity': request.data.get('quantity')
+            'quantity': request.data.get('quantity'),
+            'price': product.price,
         }
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)

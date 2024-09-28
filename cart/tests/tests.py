@@ -65,7 +65,7 @@ class CartItemViewSetTestCase(APITestCase):
     def setUp(self):
         self.user = UserFactory()
         self.product = ProductFactory()
-        self.cart = CartFactory()
+        self.cart = CartFactory(user=self.user)
         self.client.force_login(user=self.user)
         
 
@@ -76,3 +76,11 @@ class CartItemViewSetTestCase(APITestCase):
         print(response.data)
         self.assertEqual(response.status_code, 201)
         
+
+    def test_remove_item_from_cart(self):
+        cart_item = CartItemFactory(cart=self.cart, product = self.product, quantity = 2)
+        url = reverse('cartitem-detail', args=[cart_item.id])
+        data = {'quantity': 1, 'product_id': self.product.id, 'price': self.product.price}
+        response = self.client.put(url, data)
+        print(response.data)
+        self.assertEqual(response.status_code, 200)
