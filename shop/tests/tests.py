@@ -7,6 +7,7 @@ from rest_framework.test import APITestCase
 from django.urls import reverse
 from rest_framework.authtoken.models import Token
 from rest_framework import status
+from django.contrib.auth.models import User
 
 
 
@@ -57,3 +58,23 @@ class SignUpViewSetTest(APITestCase):
         }
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(User.objects.filter(username='testusername').exists())
+
+
+
+class LoginViewSettest(APITestCase):
+    def setUp(self):
+        self.user = UserFactory(username='test', password='testpass')
+
+
+    def test_user_login(self):
+        url = reverse('login-list')
+        data = {
+            'username':'test',
+            'password':'testpass'
+        }
+        response = self.client.post(url, data)
+        print(response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Token', response.data)
+        

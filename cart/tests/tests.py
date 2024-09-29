@@ -65,7 +65,6 @@ class CartViewSetTest(APITestCase):
         cart = CartFactory(user=self.user)
         url = reverse('cart-detail', args=[cart.id])
         response = self.client.get(url)
-        print(response.data)
         self.assertEqual(response.status_code, 200)
 
 

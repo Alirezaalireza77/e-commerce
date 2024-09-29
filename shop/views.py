@@ -30,7 +30,7 @@ class SignUpViewSet(mixins.CreateModelMixin, GenericViewSet):
 
 class LoginViewSet(mixins.CreateModelMixin, GenericViewSet):
     queryset = User.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
 
     def create(self, request, *args, **kwargs):
@@ -43,7 +43,7 @@ class LoginViewSet(mixins.CreateModelMixin, GenericViewSet):
         user = authenticate(username=username, password=password)
         if user is not None:
             token, create = Token.objects.get_or_create(user=user)
-            return Response({'token': 'token_key'}, status=status.HTTP_200_OK)
+            return Response({'token': token.key}, status=status.HTTP_200_OK)
         return Response({'message':'Invalid credential.'}, status=status.HTTP_400_BAD_REQUEST)
     
 
