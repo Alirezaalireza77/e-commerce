@@ -56,23 +56,21 @@ class CartSerializer(serializers.ModelSerializer):
         return obj.calculate_total_price()
 
 
-    def create(self, user):
-        user = user if user.is_authenticated else None
-        
+    def create(self, validated_data):
+        user = validated_data.get('user')
         cart, created = Cart.objects.get_or_create(user=user)
         return cart
     
 
-    def destroy(self, user):
-        user = user if user.is_authenticated else None
+    def destroy(self, validated_data):
+        user = validated_data.get('user')
         cart = Cart.objects.get(user=user)
-
         if cart:
             cart.delete()
         serializers.ValidationError('cart does not exist.')   
         
 
-
+    
 
 
         
