@@ -6,7 +6,7 @@ from shop.models import Product
 
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
-    cart_key = models.CharField(max_length=255,unique=True, null=True, blank=True, default='')
+    cart_key = models.CharField(max_length=255, unique=True, null=True, blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
     Changed_at = models.DateTimeField(auto_now=True)
     total_amount = models.DecimalField(max_digits=12, decimal_places=0, blank=True, null=True)

@@ -1,9 +1,9 @@
-from rest_framework import generics, status, mixins
+from rest_framework import status, mixins
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import Product, Category
-from .serializers import ProductSerializer, CategorySeializer, SignUpSerializer
+from .models import Product
+from .serializers import ProductSerializer, SignUpSerializer, LoginSerializer, LogoutSerializer
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
@@ -31,28 +31,23 @@ class SignUpViewSet(mixins.CreateModelMixin, GenericViewSet):
 class LoginViewSet(mixins.CreateModelMixin, GenericViewSet):
     queryset = User.objects.all()
     permission_classes = [AllowAny]
-
+    serializer_class = LoginSerializer
 
     def create(self, request, *args, **kwargs):
-        username = request.data.get('username')
-        password = request.data.get('password')
-        try:
-            user = User.objects.get(username=username)
-        except:
-            return Response({'message':'user was not exist.'}, status=status.HTTP_400_BAD_REQUEST)
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            token, create = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key}, status=status.HTTP_200_OK)
-        return Response({'message':'Invalid credential.'}, status=status.HTTP_400_BAD_REQUEST)
-    
+     serializer = self.get_serializer(data=request.data)
+     if serializer.is_valid():
+         user = serializer.validated_data
+         token, created = Token.objects.get_or_create(user=user)
+         return Response({'token': token.key}, status=status.HTTP_200_OK)
+     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    
 
 
 class LogoutViewSet(mixins.CreateModelMixin, GenericViewSet):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
-
+    serializer_class = LogoutSerializer
 
     def create(self, request, *args, **kwargs):
         request.user.auth_token.delete()

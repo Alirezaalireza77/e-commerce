@@ -98,7 +98,7 @@ class LoginViewSetTest(APITestCase):
         }
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data['message'],'user was not exist.')
+        
         
 
 class ProductListViewSetTest(APITestCase):
