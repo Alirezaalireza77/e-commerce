@@ -58,7 +58,7 @@ class CartSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = validated_data.get('user')
-        cart, created = Cart.objects.get_or_create(user=user)
+        cart, _ = Cart.objects.get_or_create(user=user)
         return cart
     
 
