@@ -43,7 +43,7 @@ class LoginViewSet(mixins.CreateModelMixin, GenericViewSet):
         user = authenticate(username=username, password=password)
         if user is not None:
             token, create = Token.objects.get_or_create(user=user)
-            return Response({'token': 'token_key'}, status=status.HTTP_200_OK)
+            return Response({'token': token.key}, status=status.HTTP_200_OK)
         return Response({'message':'Invalid credential.'}, status=status.HTTP_400_BAD_REQUEST)
     
 
@@ -56,7 +56,7 @@ class LogoutViewSet(mixins.CreateModelMixin, GenericViewSet):
 
     def create(self, request, *args, **kwargs):
         request.user.auth_token.delete()
-        return Response({'message':'You logout successfully.'}, status=status.HTTP_200_OK)
+        return Response({'message':'You logout successfully.'}, status=status.HTTP_204_NO_CONTENT)
     
 
 class ProductListViewSet(mixins.ListModelMixin, GenericViewSet):

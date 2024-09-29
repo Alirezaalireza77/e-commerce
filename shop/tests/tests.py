@@ -119,3 +119,16 @@ class ProductListViewSetTest(APITestCase):
         url = reverse('products-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+
+
+class logoutViewSetTest(APITestCase):
+    def setUp(self):
+        self.user = UserFactory()
+        self.token, created = Token.objects.get_or_create(user=self.user)
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.token.key}') 
+
+
+    def test_logout_user(self):
+        url = reverse('logout-list')
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 204)
