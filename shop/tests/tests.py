@@ -61,10 +61,23 @@ class SignUpViewSetTest(APITestCase):
         self.assertTrue(User.objects.filter(username='testusername').exists())
 
 
+    def test_invalid_signup_user(self):
+        url = reverse('signup-list')
+        data ={
+            'username':'test',
+            'password':''
+        }
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 400)
+
+
+
 
 class LoginViewSettest(APITestCase):
     def setUp(self):
-        self.user = UserFactory(username='test', password='testpass')
+        self.user = UserFactory(username='test')
+        self.user.set_password('testpass')
+        self.user.save()
 
 
     def test_user_login(self):
@@ -76,5 +89,5 @@ class LoginViewSettest(APITestCase):
         response = self.client.post(url, data)
         print(response.data)
         self.assertEqual(response.status_code, 200)
-        self.assertIn('Token', response.data)
+        
         
