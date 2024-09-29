@@ -73,7 +73,7 @@ class SignUpViewSetTest(APITestCase):
 
 
 
-class LoginViewSettest(APITestCase):
+class LoginViewSetTest(APITestCase):
     def setUp(self):
         self.user = UserFactory(username='test')
         self.user.set_password('testpass')
@@ -100,3 +100,22 @@ class LoginViewSettest(APITestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data['message'],'user was not exist.')
         
+
+class ProductListViewSetTest(APITestCase):
+    def setUp(self):
+        self.category = CategoryFactory(name='electronics')
+        self.product1 = ProductFactory(name='laptop',
+                                        price=1000,
+                                          category=self.category,
+                                            description='nice')
+        
+        self.product2 = ProductFactory(name='macbook',
+                                        price=1555,
+                                          category=self.category,
+                                            description='good product')
+        
+
+    def test_product_list(self):
+        url = reverse('products-list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
