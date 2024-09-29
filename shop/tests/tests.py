@@ -132,3 +132,5 @@ class logoutViewSetTest(APITestCase):
         url = reverse('logout-list')
         response = self.client.post(url)
         self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.data['message'], 'You logout successfully.')
+        self.assertFalse(Token.objects.filter(user=self.user).exists())
