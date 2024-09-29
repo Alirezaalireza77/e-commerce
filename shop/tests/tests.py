@@ -2,7 +2,13 @@ from typing import Any
 from django.test import TestCase
 import factory
 from django.core.exceptions import ValidationError
-from .factories import CategoryFactory, ProductFactory
+from .factories import CategoryFactory, ProductFactory, UserFactory
+from rest_framework.test import APITestCase
+from django.urls import reverse
+from rest_framework.authtoken.models import Token
+from rest_framework import status
+
+
 
 class CategoryTest(TestCase):
 
@@ -37,4 +43,17 @@ class CategoryTest(TestCase):
 
 
 
+class SignUpViewSetTest(APITestCase):
+    def setUp(self):
+        user = UserFactory()
 
+    
+    def test_signup_user(self):
+        url = reverse('signup-list')
+        data = {
+            'username': 'testusername',
+            'password': 'testpassword',
+            'email': 'admin@gmail.com',
+        }
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)

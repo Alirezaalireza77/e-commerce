@@ -1,6 +1,6 @@
 import factory  
 from shop.models import Category, Product
-
+from django.contrib.auth.models import User
 
 class CategoryFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -17,6 +17,16 @@ class ProductFactory(factory.django.DjangoModelFactory):
     category = factory.SubFactory(CategoryFactory)
     price = factory.Faker('random_int', min=1, max=100)
     description = factory.Faker('text')
+
+
+class UserFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = User
+
+    username = factory.Faker('user_name')
+    password = factory.Faker('password')
+    email = factory.Faker('email')
+
 
 
 

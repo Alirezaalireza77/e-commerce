@@ -19,7 +19,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class SignUpSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(read_only=True)
+    password = serializers.CharField(write_only=True)
     class Meta:
         model = User
         fields = ['username', 'email', 'password']
@@ -29,7 +29,7 @@ class SignUpSerializer(serializers.ModelSerializer):
         user = User.objects.create(
             username=validated_data['username'],
             email=validated_data['email'],
-            password=validated_data['password']
+            password=validated_data['password'],
         )
         return user
     
