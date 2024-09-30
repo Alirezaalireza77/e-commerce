@@ -9,6 +9,6 @@ router.register(r'logout', LogoutViewSet, basename='logout')
 router.register(r'products', ProductListViewSet, basename='products')
 
 urlpatterns = [
-    path('shop/', include(router.urls)),
+    path('', include(router.urls)),
 
 ]

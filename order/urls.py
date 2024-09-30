@@ -1,9 +1,11 @@
 from django.urls import path, include
 from .views import OrderViewSet
-from rest_framework.routers import DefaultRoutere
+from rest_framework.routers import DefaultRouter
 
-router = DefaultRoutere()
+router = DefaultRouter()
 router.register(r'order', OrderViewSet, basename='order')
+
+
 urlpatterns = [
-    path('order/', include(router.urls)),
+    path('', include(router.urls)),
 ]
