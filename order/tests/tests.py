@@ -96,23 +96,17 @@ class OrderTestCase(TestCase):
 
 class OrderViewSetTest(APITestCase):
     def setUp(self):
-        self.user = UserFactory(username='test')
-        self.user.set_password('testpass')
-        self.user.save()
-        self.category = CategoryFactory()
-        self.product = ProductFactory(name='test', description='', category=self.category, price=100)
-        self.client.login(username='test', password='testpass')
+        self.user = UserFactory.create()
+        self.product = ProductFactory.create()
+        self.client.force_authenticate(user=self.user)
 
 
     def test_order_creatation(self):
         url = reverse('order-list')
         data = {
-            'user': self.user.id,
             'product': self.product.id,
-            'quantity': 2,
             'address': 'tehran',
             'phone': '09121212121'
         }
         response = self.client.post(url, data, format='json')
-        print(response.data)
         self.assertEqual(response.status_code, 201)

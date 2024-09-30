@@ -5,32 +5,37 @@ from rest_framework import serializers
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ['product', 'quantity', 'status', 'user', 'address', 'phone', 'date', 'is_active']
-        read_only_fields = ['date', 'status', 'user']
+        fields = "__all__"
+        read_only_fields = ['date', 'is_active','id', 'user', 'status']
 
 
     def validate_phone(self, value):
-        if not value.startswith('09') and not value.isdigit():
-            raise serializers.ValidationError('phone number must contain digits and starts with 09.')
+        if not value.startswith('09') or not value.isdigit():
+            raise serializers.ValidationError('phone number must starts with "09" and phone number must contains only digits.')
         return value
     
+
     def validate_quantity(self, value):
         if value < 1:
-            raise serializers.ValidationError('oder quantity must be atleast 1.')
+            raise serializers.ValidationError('quantity of order must be atleast 1.')
+        return value
+    
+    def validate_status(self, value):
+        instance = self.instance
+        if instance:
+            current_status = instance.status
+            if value not in instance.valid_status_changing.get(current_status, []):
+                raise serializers.ValidationError(f"Cannot change status from {current_status} to {value}.")
         return value
 
-
-    def create(self, validated_data):
-        user = self.context['request'].user
-        order = Order.objects.create(user=user, **validated_data)
-        return order
-    
 
     def update(self, instance, validated_data):
         new_status = validated_data.get('status', instance.status)
-        if 'status' in validated_data:
-            instance.change_status(new_status)
+        if new_status:
+            if new_status != instance.status:
+                instance.change_status(new_status)
         return super().update(instance, validated_data)
+    
 
 
 class OrderStatusChangeLogSerializer(serializers.ModelSerializer):
