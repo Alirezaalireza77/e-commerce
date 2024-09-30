@@ -10,6 +10,7 @@ class OrderViewSet(mixins.CreateModelMixin,
                    mixins.RetrieveModelMixin,
                    mixins.ListModelMixin,
                    mixins.DestroyModelMixin,
+                   mixins.UpdateModelMixin,
                    viewsets.GenericViewSet):
     
     queryset = Order.objects.all()
@@ -23,3 +24,4 @@ class OrderViewSet(mixins.CreateModelMixin,
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+

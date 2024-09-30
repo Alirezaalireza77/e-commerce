@@ -6,7 +6,7 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = "__all__"
-        read_only_fields = ['date', 'is_active','id', 'user', 'status']
+        read_only_fields = ['date','id', 'user']
 
 
     def validate_phone(self, value):

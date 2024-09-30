@@ -105,8 +105,40 @@ class OrderViewSetTest(APITestCase):
         url = reverse('order-list')
         data = {
             'product': self.product.id,
+            'quantity': 2,
             'address': 'tehran',
             'phone': '09121212121'
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, 201)
+
+
+    def test_orders_list(self):
+        OrderFactory.create(user=self.user, product=self.product)
+        url = reverse('order-list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_update_order_status(self):
+        order = OrderFactory.create(user=self.user, product=self.product)
+        url = reverse('order-detail', args=[order.id])
+        data = {
+            'status': 'paid'
+        }
+        response = self.client.patch(url, data)
+        self.assertEqual(response.status_code, 200)
+        order.refresh_from_db()
+        self.assertEqual(order.status, 'paid')
+
+
+    def test_invalid_order_phone(self):
+        url = reverse('order-list')
+        data = {
+            'product': self.product.id,
+            'quantity': 2,
+            'address': 'tehran',
+            'phone': '12345678',
+        }
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 400)
