@@ -3,70 +3,69 @@ Django E-commerce Platform
 This is a Django-powered e-commerce platform for managing categories, products, customers, orders, and a shopping cart system. It supports user authentication, cart management, and order processing. The project is designed using Django Rest Framework (DRF) and includes API endpoints for interacting with the system.
 Features
 
-  * User Registration and Authentication (Login, Logout, Signup)
-  * Product Listing and Details
-  * Shopping Cart Management
-  * Order Management
-  * Status Tracking for Orders
-  * API built with Django Rest Framework (DRF)
+    User Registration and Authentication (Login, Logout, Signup)
+    Product Listing and Details
+    Shopping Cart Management
+    Order Management
+    Status Tracking for Orders
+    API built with Django Rest Framework (DRF)
 
 Tech Stack
 
-  * Backend: Django, Django Rest Framework
-  * Database: SQLite (default), PostgreSQL, or any other compatible Django database
-  * Frontend: Css, Html, Bootstrap
-  * Authentication: Token-based authentication using djangorestframework-simplejwt or similar package
+    Backend: Django, Django Rest Framework
+    Database: SQLite (default), PostgreSQL, or any other compatible Django database
+    Frontend: Css, Html, Bootstrap
+    Authentication: Token-based authentication using djangorestframework-simplejwt or similar package
 
 Installation
 
-  Clone the repository:
+    Clone the repository:
 
     bash git clone https://github.com/Alirezaalireza77/e-commerce.git
-    cd e-commerce
-
+         cd your-repo
 
 
 
 Create and activate a virtual environment:
 
-bash python -m venv venv
-source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    bash python -m venv venv
+         source venv/bin/activate  # On Windows use `venv\Scripts\activate`
 
 
 
 Install the required dependencies:
 
-bash
+    bash pip install -r requirements.txt
 
-pip install -r requirements.txt
+
 
 Set up the database:
 
-bash
+    bash python manage.py migrate
 
-python manage.py migrate
+
 
 Create a superuser to access the admin panel:
 
-bash
+    bash python manage.py createsuperuser
 
-python manage.py createsuperuser
+
 
 Run the development server:
 
-bash
+    bash python manage.py runserver
 
-    python manage.py runserver
+    
 
 Environment Variables
 
 To run this project, you need to set the following environment variables. Create a .env file in the root directory with these variables:
 
-bash
+    bash SECRET_KEY='django-insecure-4f_x9@r$qn$kv0bgx$3+e$jdshf14za657hzc0_$9kiz#z9)&u'
+         DEBUG=True
+         DATABASE_URL='127.0.0.1:5432'
 
-SECRET_KEY=project_secret_key
-DEBUG=True
-DATABASE_URL=127.0.0.1:5432
+
 
 API Documentation
 
@@ -74,15 +73,15 @@ The API endpoints are built using Django Rest Framework. To explore the availabl
 
 arduino
 
-http://127.0.0.1:8000/api/
+http://127.0.0.1:8000/shop/
 
 Running Tests
 
 To run the tests:
 
-bash
+    bash python manage.py test
 
-python manage.py test
+
 
 Tests are written using Django's TestCase and APITestCase along with Factory Boy for fixtures.
 Contributing
