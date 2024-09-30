@@ -21,17 +21,18 @@ Installation
 
   Clone the repository:
 
-    bash
+    bash git clone https://github.com/Alirezaalireza77/e-commerce.git
+    cd e-commerce
 
-git clone https://github.com/Alirezaalireza77/e-commerce.git
-cd e-commerce
+
+
 
 Create and activate a virtual environment:
 
-bash
-
-python -m venv venv
+bash python -m venv venv
 source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+
+
 
 Install the required dependencies:
 
@@ -87,7 +88,7 @@ Tests are written using Django's TestCase and APITestCase along with Factory Boy
 Contributing
 
 Contributions are welcome! Please open a pull request or an issue for any suggestions or bug reports.
-License 
+
 
 This project is licensed under the MIT License. See the LICENSE file for details.
 Contact
