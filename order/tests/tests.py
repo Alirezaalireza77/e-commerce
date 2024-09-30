@@ -1,6 +1,10 @@
 from django.test import TestCase
-from .factories import OrderFactory, OrderStatusChangeLogFactory
+from .factories import OrderFactory, OrderStatusChangeLogFactory, UserFactory
+from shop.tests.factories import ProductFactory, CategoryFactory
 from django.core.exceptions import ValidationError
+from rest_framework.test import APITestCase
+from rest_framework import status
+from django.urls import reverse
 # Create your tests here.
 
 
@@ -90,3 +94,25 @@ class OrderTestCase(TestCase):
         order.clean()
 
 
+class OrderViewSetTest(APITestCase):
+    def setUp(self):
+        self.user = UserFactory(username='test')
+        self.user.set_password('testpass')
+        self.user.save()
+        self.category = CategoryFactory()
+        self.product = ProductFactory(name='test', description='', category=self.category, price=100)
+        self.client.login(username='test', password='testpass')
+
+
+    def test_order_creatation(self):
+        url = reverse('order-list')
+        data = {
+            'user': self.user.id,
+            'product': self.product.id,
+            'quantity': 2,
+            'address': 'tehran',
+            'phone': '09121212121'
+        }
+        response = self.client.post(url, data, format='json')
+        print(response.data)
+        self.assertEqual(response.status_code, 201)

@@ -1,7 +1,7 @@
 from order.models import Order, OrderStatusChangeLog
 import factory 
 from django.contrib.auth.models import User
-from shop.tests.factories import CategoryFactory, ProductFactory
+from shop.tests.factories import ProductFactory
 import string
 from random import choices
 
@@ -12,7 +12,7 @@ class UserFactory(factory.django.DjangoModelFactory):
         model = User
 
     username = factory.Faker('user_name')
-    email = factory.Faker('email')
+    password = factory.Faker('password')
 
 
 class OrderFactory(factory.django.DjangoModelFactory):
