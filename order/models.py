@@ -25,7 +25,9 @@ class Order(models.Model):
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
     quantity = models.IntegerField(default=1, validators=[MinValueValidator(1)])
     status = models.CharField(
-        max_length=20, choices=status_choice, default='new')
+        max_length=20,
+        choices=status_choice,
+        default='new')
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
     address = models.TextField(max_length=100, blank=False)
     phone = models.CharField(max_length=11, blank=False)
