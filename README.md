@@ -71,7 +71,7 @@ API Documentation
 
 The API endpoints are built using Django Rest Framework. To explore the available endpoints, run the server and visit the DRF Browsable API at:
 
-arduino
+
 
 http://127.0.0.1:8000/shop/
 
@@ -84,15 +84,15 @@ To run the tests:
 
 
 Tests are written using Django's TestCase and APITestCase along with Factory Boy for fixtures.
-Contributing
+
 
 Contributions are welcome! Please open a pull request or an issue for any suggestions or bug reports.
 
 
 This project is licensed under the MIT License. See the LICENSE file for details.
-Contact
+
 
 For any queries, please contact:
 
-    Your Alireza
+    Alireza
     GitHub: Alirezaalireza77
