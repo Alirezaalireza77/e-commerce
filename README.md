@@ -22,7 +22,7 @@ Installation
     Clone the repository:
 
     bash git clone https://github.com/Alirezaalireza77/e-commerce.git
-         cd your-repo
+         
 
 
 
