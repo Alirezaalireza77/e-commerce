@@ -3,7 +3,7 @@ From python:3.10-alpine
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-RUN apk update && apk add --no-catch \
+RUN apk update && apk add --no-cache \
     gcc \
     musl-dev \
     postgresql-dev \
@@ -12,7 +12,7 @@ WORKDIR /app
 
 COPY requrement.txt /app/
 
-RUN pip install --upgrade pip && pip install -r requrement.txt
+RUN pip install --upgrade pip && pip install -r requirement.txt
 
 COPY . /app/
 
