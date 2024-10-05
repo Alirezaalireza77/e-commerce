@@ -86,11 +86,11 @@ WSGI_APPLICATION = 'djangoProject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD':'admin',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'NAME': os.getenv('postgres', 'ecommerce'),
+        'USER': os.getenv('postgres', 'user'),
+        'PASSWORD':os.getenv('admin', 'password'),
+        'HOST': os.getenv('127.0.0.1', 'host'),
+        'PORT': os.getenv('5432', 'port'),
     }
 }
 
