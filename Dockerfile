@@ -1,14 +1,15 @@
 From python:3.10-alpine
 
-
 RUN apk update && apk add --no-cache \
     gcc \
     musl-dev \
     postgresql-dev \
-    libpq \
+    libpq -dev\
+    python3-dev \
+    build-base
 WORKDIR /app
 
-COPY requrement.txt /app/
+COPY requirement.txt /app/
 
 RUN python -m venv venv
 
