@@ -4,7 +4,7 @@ RUN apk update && apk add --no-cache \
     gcc \
     musl-dev \
     postgresql-dev \
-    libpq -dev\
+    libpq -dev./\
     python3-dev \
     build-base
 WORKDIR /app
